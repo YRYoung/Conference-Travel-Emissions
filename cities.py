@@ -91,7 +91,7 @@ class CityCollection:
     def total_co2(self, city: City) -> float:
         total = 0
         for c in self.cities:
-            total += c.co2_to(city)
+            total += c.co2_to(city) * c.citizens_count
         return total
 
     def co2_by_country(self, city: City) -> Dict[str, float]:
