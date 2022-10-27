@@ -59,6 +59,9 @@ class CityCollection:
     def __init__(self, input):
         self.cities = input if isinstance(input, list) else read_csv(input)
 
+    def __len__(self):
+        return len(self.cities)
+
     def countries(self) -> List[str]:
         countries = [city.country for city in self.cities]
         countries = list(set(countries))
@@ -101,7 +104,12 @@ class CityCollection:
         return dict
 
     def summary(self, city: City):
-        raise NotImplementedError
+        print('Host city: {} ({})'.format(city.name, city.country))
+        print('Total CO2: {} tones'.format(round(self.total_co2(city) / 1000.)))
+        print('Total attendees travelling to Zurich from {} different cities: {}'.format(
+            self.__len__(), self.total_attendees()))
+        return
+
 
     def sorted_by_emissions(self) -> List[City]:
         raise NotImplementedError
