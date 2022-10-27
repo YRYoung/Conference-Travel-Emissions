@@ -1,4 +1,4 @@
-from conference.cities import City, CityCollection
+from cities import City, CityCollection
 import csv
 
 
