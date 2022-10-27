@@ -25,7 +25,7 @@ class City:
         return 2 * R * math.asin(
             (
                     math.sin((other.latitude - self.latitude) / 180 * math.pi / 2) ** 2 +
-                    math.cos(self.latitude / 180 * math.pi ) * math.cos(other.latitude / 180 * math.pi ) *
+                    math.cos(self.latitude / 180 * math.pi) * math.cos(other.latitude / 180 * math.pi) *
                     math.sin((other.longitude - self.longitude) / 180 * math.pi / 2) ** 2
             ) ** .5)
 
@@ -52,7 +52,7 @@ def read_csv(filepath: str):
                  citizens_count=int(data[i]['N']),
                  longitude=float(data[i]['lon']),
                  latitude=float(data[i]['lat']))
-            for i in range(len(data))][:3]
+            for i in range(len(data))]
 
 
 class CityCollection:
@@ -77,7 +77,13 @@ class CityCollection:
         return total_d
 
     def travel_by_country(self, city: City) -> Dict[str, float]:
-        raise NotImplementedError
+        dict = {}
+        countries = self.countries()
+        for country in countries:
+            cities_of_a_country = CityCollection([c for c in self.cities if c.country == country])
+            # for c in cities_of_a_country.cities: assert c.country == country
+            dict[country] = cities_of_a_country.total_distance_travel_to(city)
+        return dict
 
     def total_co2(self, city: City) -> float:
         raise NotImplementedError
