@@ -1,4 +1,5 @@
 import csv
+import math
 from typing import Dict, List
 
 
@@ -14,14 +15,19 @@ class City:
             raise Exception("Invalid longitude value: " +
                             "larger than 180" if latitude > 180 else "less than -180", longitude)
         self.latitude = latitude
-        self.Longitude = longitude
+        self.longitude = longitude
         self.citizens_count = citizens_count
         self.name = name
         self.country = country
 
     def distance_to(self, other: 'City') -> float:
-        R=6371
-        raise NotImplementedError
+        R = 6371
+        return 2 * R * math.asin(
+            (
+                    math.sin((other.latitude - self.latitude) / 180 * math.pi / 2) ** 2 +
+                    math.cos(self.latitude) * math.cos(other.latitude) *
+                    math.sin((other.longitude - self.longitude) / 180 * math.pi / 2) ** 2
+            ) ** .5)
 
     def co2_to(self, other: 'City') -> float:
         raise NotImplementedError
