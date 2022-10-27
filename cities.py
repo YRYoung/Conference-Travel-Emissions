@@ -76,7 +76,7 @@ class CityCollection:
     def total_distance_travel_to(self, city: City) -> float:
         total_d = 0.
         for c in self.cities:
-            total_d += c.distance_to(city)
+            total_d += c.distance_to(city) * c.citizens_count
         return total_d
 
     def travel_by_country(self, city: City) -> Dict[str, float]:
@@ -110,9 +110,9 @@ class CityCollection:
             self.__len__(), self.total_attendees()))
         return
 
-
     def sorted_by_emissions(self) -> List[City]:
-        raise NotImplementedError
+        sort_list = self.cities.sort(key=lambda h_city: self.total_co2(h_city))
+        return sort_list
 
     def plot_top_emitters(self, city: City, n: int, save: bool):
         raise NotImplementedError
