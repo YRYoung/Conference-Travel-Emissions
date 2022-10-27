@@ -1,3 +1,4 @@
+import csv
 from typing import Dict, List
 
 
@@ -19,15 +20,31 @@ class City:
         self.country = country
 
     def distance_to(self, other: 'City') -> float:
+        R=6371
         raise NotImplementedError
 
     def co2_to(self, other: 'City') -> float:
         raise NotImplementedError
 
 
+def read_csv(filepath: str):
+    data = []
+    with open(filepath, 'r', newline='') as csvfile:
+        reader = csv.DictReader(csvfile)
+        for row in reader:  # 将csv 文件中的数据保存到data中
+            data.append(row)  # 选择某一列加入到data数组中
+
+    return [City(name=data[i]['city'],
+                 country=data[i]['country'],
+                 citizens_count=int(data[i]['N']),
+                 longitude=float(data[i]['lon']),
+                 latitude=float(data[i]['lat']))
+            for i in range(len(data))]
+
+
 class CityCollection:
-    def __init__(self, list_of_cities: List[City]):
-        ...
+    def __init__(self, input):
+        self.cities = input if isinstance(input, list) else read_csv(input)
 
     def countries(self) -> List[str]:
         raise NotImplementedError
