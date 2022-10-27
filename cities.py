@@ -86,10 +86,19 @@ class CityCollection:
         return dict
 
     def total_co2(self, city: City) -> float:
-        raise NotImplementedError
+        total = 0
+        for c in self.cities:
+            total += c.co2_to(city)
+        return total
 
     def co2_by_country(self, city: City) -> Dict[str, float]:
-        raise NotImplementedError
+        dict = {}
+        countries = self.countries()
+        for country in countries:
+            cities_of_a_country = CityCollection([c for c in self.cities if c.country == country])
+            # for c in cities_of_a_country.cities: assert c.country == country
+            dict[country] = cities_of_a_country.total_co2(city)
+        return dict
 
     def summary(self, city: City):
         raise NotImplementedError
