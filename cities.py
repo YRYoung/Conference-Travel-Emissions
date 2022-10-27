@@ -1,6 +1,7 @@
 import csv
 import math
 from typing import Dict, List
+import matplotlib.pyplot as plt
 
 
 class City:
@@ -42,7 +43,7 @@ class City:
 
 def read_csv(filepath: str):
     data = []
-    with open(filepath, 'r', newline='') as csvfile:
+    with open(filepath, 'r', newline='', encoding="utf8") as csvfile:
         reader = csv.DictReader(csvfile)
         for row in reader:  # 将csv 文件中的数据保存到data中
             data.append(row)  # 选择某一列加入到data数组中
@@ -111,8 +112,35 @@ class CityCollection:
         return
 
     def sorted_by_emissions(self) -> List[City]:
-        sort_list = self.cities.sort(key=lambda h_city: self.total_co2(h_city))
+        sort_list = self.cities.copy()
+        sort_list.sort(key=lambda h_city: self.total_co2(h_city), reverse=True)
+        # for i in range(len(sort_list) - 1):
+        #     print(i)
+        #     assert self.total_co2(sort_list[i]) >= self.total_co2(sort_list[i + 1])
         return sort_list
 
-    def plot_top_emitters(self, city: City, n: int, save: bool):
-        raise NotImplementedError
+    def plot_top_emitters(self, city: City, n: int = 10, save: bool = False):
+        dict = self.co2_by_country(city)
+        list = [(country_name, dict[country_name]) for country_name in dict.keys()]
+
+        list.sort(key=lambda tuple: tuple[1], reverse=True)
+
+        emissions_everywhere_else = 0
+        for tuple in list[n:]:
+            emissions_everywhere_else += tuple[1]
+        new_list = list[:n] + [('All other countries', emissions_everywhere_else)]
+
+        names = [tuple[0] for tuple in new_list]
+        emissions = [tuple[1] / 1000 for tuple in new_list]
+
+        plt.figure(figsize=(n * 1.5, n))
+        plt.title('Total Emissions from Each Country (top {})'.format(n))
+        plt.ylabel('Total emissions(tonnes CO2)')
+
+
+        plt.bar(names, emissions, color=['royalblue','hotpink'])
+
+        if save:
+            plt.savefig(city.name.replace(' ', '_') + '.png')
+
+        plt.show()
