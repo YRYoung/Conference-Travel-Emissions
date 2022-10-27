@@ -52,7 +52,7 @@ def read_csv(filepath: str):
                  citizens_count=int(data[i]['N']),
                  longitude=float(data[i]['lon']),
                  latitude=float(data[i]['lat']))
-            for i in range(len(data))]
+            for i in range(len(data))][:3]
 
 
 class CityCollection:
@@ -60,10 +60,15 @@ class CityCollection:
         self.cities = input if isinstance(input, list) else read_csv(input)
 
     def countries(self) -> List[str]:
-        raise NotImplementedError
+        countries = [city.country for city in self.cities]
+        countries = list(set(countries))
+        return countries
 
     def total_attendees(self) -> int:
-        raise NotImplementedError
+        total = 0
+        for city in self.cities:
+            total += city.citizens_count
+        return total
 
     def total_distance_travel_to(self, city: City) -> float:
         raise NotImplementedError
