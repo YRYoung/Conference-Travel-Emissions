@@ -30,7 +30,14 @@ class City:
             ) ** .5)
 
     def co2_to(self, other: 'City') -> float:
-        raise NotImplementedError
+        d = self.distance_to(other)
+        if d <= 1000:
+            emission = 200.
+        elif d <= 8000:
+            emission = 250.
+        else:
+            emission = 300.
+        return emission * d
 
 
 def read_csv(filepath: str):
