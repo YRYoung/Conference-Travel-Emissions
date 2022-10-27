@@ -25,7 +25,7 @@ class City:
         return 2 * R * math.asin(
             (
                     math.sin((other.latitude - self.latitude) / 180 * math.pi / 2) ** 2 +
-                    math.cos(self.latitude) * math.cos(other.latitude) *
+                    math.cos(self.latitude / 180 * math.pi ) * math.cos(other.latitude / 180 * math.pi ) *
                     math.sin((other.longitude - self.longitude) / 180 * math.pi / 2) ** 2
             ) ** .5)
 
@@ -71,7 +71,10 @@ class CityCollection:
         return total
 
     def total_distance_travel_to(self, city: City) -> float:
-        raise NotImplementedError
+        total_d = 0.
+        for c in self.cities:
+            total_d += c.distance_to(city)
+        return total_d
 
     def travel_by_country(self, city: City) -> Dict[str, float]:
         raise NotImplementedError
