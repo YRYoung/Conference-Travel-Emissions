@@ -6,28 +6,86 @@ import matplotlib.pyplot as plt
 
 class City:
     def __init__(self, name: str, country: str, citizens_count: int, longitude: float, latitude: float):
-        if citizens_count < 0:
-            raise Exception("Number of citizens should not be less than 0.", citizens_count)
-        if latitude > 90 or latitude < -90:
-            raise Exception("Invalied latitude value: " +
-                            "larger than 90" if latitude > 90 else "less than -90",
-                            latitude)
-        if latitude > 180 or latitude < -180:
-            raise Exception("Invalid longitude value: " +
-                            "larger than 180" if latitude > 180 else "less than -180", longitude)
         self.latitude = latitude
         self.longitude = longitude
         self.citizens_count = citizens_count
         self.name = name
         self.country = country
 
+
+    @property
+    def name(self):
+        return self._name
+    @name.setter
+    def name(self,value):
+        if not isinstance(value,str):
+            raise Exception("Name of city should be a string instead of {}".format(type(value)))
+        self._name=value
+
+
+    
+    @property
+    def country(self):
+        return self._country
+    @country.setter
+    def country(self,value):
+        if not isinstance(value,str):
+            raise Exception("Name of country should be a string instead of {}".format(type(value)))
+        self._country=value
+
+    @property
+    def citizens_count(self):
+        return self._citizens_count
+    @citizens_count.setter
+    def citizens_count(self,value):
+        if not isinstance(value,int):
+            raise ValueError("Number of citizens should be an int instead of {}".format(type(value)))
+        if value < 0:
+           raise ValueError("Number of citizens should not be less than 0.")
+        self._citizens_count=value
+
+
+
+    @property
+    def latitude(self):
+        return self._latitude
+    @latitude.setter
+    def latitude(self,value):
+        if not (isinstance(value,float) or isinstance(value,int)) :
+            raise ValueError(
+                "Latitude should be float instead of {}".format(type(value)))
+                
+        if value > 90 or value < -90:
+            raise ValueError("Invalied latitude value: {} {} than {}" .format
+            (value, 
+            'larger' if value > 90 else 'less',
+            90 if value > 90 else -90)
+            )
+        self._latitude=value
+
+    @property
+    def longitude(self):
+        return self._longitude
+    @longitude.setter
+    def longitude(self,value):
+        if not (isinstance(value,float) or isinstance(value,int)) :
+            raise ValueError(
+                "Longtitude should be float instead of {}".format(type(value)))
+        if value > 180 or value < -180:
+            raise ValueError("Invalied longtitude value: {} {} than {}" .format
+            (value, 
+            'larger' if value > 180 else 'less',
+            180 if value > 180 else -180)
+            )
+        self._longtitude=value
+
     def distance_to(self, other: 'City') -> float:
         R = 6371
         return 2 * R * math.asin(
             (
-                    math.sin((other.latitude - self.latitude) / 180 * math.pi / 2) ** 2 +
-                    math.cos(self.latitude / 180 * math.pi) * math.cos(other.latitude / 180 * math.pi) *
-                    math.sin((other.longitude - self.longitude) / 180 * math.pi / 2) ** 2
+                    math.sin((other._latitude - self._latitude) / 180 * math.pi / 2) ** 2 +
+                    math.cos(self._latitude / 180 * math.pi) * math.cos(other._latitude / 180 * math.pi) *
+                    math.sin((other._longitude - self._longitude) / 180 * math.pi / 2) ** 2
             ) ** .5)
 
     def co2_to(self, other: 'City') -> float:
@@ -58,10 +116,10 @@ def read_csv(filepath: str):
 
 class CityCollection:
     def __init__(self, input):
-        self.cities = input if isinstance(input, list) else read_csv(input)
+        self._cities = input if isinstance(input, list) else read_csv(input)
 
     def __len__(self):
-        return len(self.cities)
+        return len(self._cities)
 
     def countries(self) -> List[str]:
         countries = [city.country for city in self.cities]
@@ -70,7 +128,7 @@ class CityCollection:
 
     def total_attendees(self) -> int:
         total = 0
-        for city in self.cities:
+        for city in self._cities:
             total += city.citizens_count
         return total
 
@@ -144,3 +202,7 @@ class CityCollection:
             plt.savefig(city.name.replace(' ', '_') + '.png')
 
         plt.show()
+
+
+
+
