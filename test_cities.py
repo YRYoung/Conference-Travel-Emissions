@@ -1,8 +1,7 @@
 import random
 import string
-from pathlib import Path
-
 import pytest
+from pathlib import Path
 from cities import City, CityCollection
 
 
@@ -209,10 +208,7 @@ class Test_CityCollection:
         def test_total_distance_travel_to(self):
 
             for i in range(10):
-                long = random.random() * 360. - 180.
-                lati = random.random() * 180. - 90.
-
-                random_city = City(name='123', country='asda', citizens_count=233, longitude=long, latitude=lati)
+                random_city = generate_random_city()
 
                 for i in range(0, len(city_collection) - 1):
                     sub_city_collection_1 = CityCollection(city_collection[:i])
@@ -225,9 +221,8 @@ class Test_CityCollection:
 
             for i in range(1, len(city_collection)):
                 sub_city_collection = CityCollection(city_collection.cities[:i])
-                long = random.random() * 360. - 180.
-                lati = random.random() * 180. - 90.
-                random_city = City(name='123', country='asda', citizens_count=233, longitude=long, latitude=lati)
+
+                random_city = generate_random_city()
 
                 countries_dict = sub_city_collection.travel_by_country(random_city)
                 # test if the keys include all countries
@@ -242,11 +237,7 @@ class Test_CityCollection:
         def test_total_co2(self):
 
             for i in range(10):
-                long = random.random() * 360. - 180.
-                lati = random.random() * 180. - 90.
-
-                random_city = City(name='123', country='asda', citizens_count=233, longitude=long, latitude=lati)
-
+                random_city = generate_random_city()
                 for i in range(0, len(city_collection) - 1):
                     sub_city_collection_1 = CityCollection(city_collection[:i])
                     sub_city_collection_2 = CityCollection(city_collection[i:])
@@ -260,9 +251,7 @@ class Test_CityCollection:
 
             for i in range(1, len(city_collection)):
                 sub_city_collection = CityCollection(city_collection.cities[:i])
-                long = random.random() * 360. - 180.
-                lati = random.random() * 180. - 90.
-                random_city = City(name='123', country='asda', citizens_count=233, longitude=long, latitude=lati)
+                random_city = generate_random_city()
 
                 countries_dict = sub_city_collection.co2_by_country(random_city)
                 # test if the keys include all countries
