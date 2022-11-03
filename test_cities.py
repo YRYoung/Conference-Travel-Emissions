@@ -186,11 +186,6 @@ class Test_City:
                 assert city1.co2_to(city2) == city1.distance_to(city2) * emission
                 assert city1.co2_to(city2) == city2.co2_to(city1)
 
-    # The City methods work correctly for all modes of transportation
-    def test_emission(self):
-        pass
-
-
 class Test_CityCollection:
     pass
 

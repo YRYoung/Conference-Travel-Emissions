@@ -4,6 +4,8 @@ from typing import Dict, List
 
 import matplotlib.pyplot as plt
 
+illegal_string = "~!@#$%^&*()_+-*/<>,.[]\/"
+
 
 def read_csv(filepath: str):
     data = []
@@ -18,9 +20,6 @@ def read_csv(filepath: str):
                  longitude=float(data[i]['lon']),
                  latitude=float(data[i]['lat']))
             for i in range(len(data))]
-
-
-illegal_string = "~!@#$%^&*()_+-*/<>,.[]\/"
 
 
 class City:
@@ -125,11 +124,26 @@ class City:
 
 
 class CityCollection:
-    def __init__(self, input):
-        self._cities = input if isinstance(input, list) else read_csv(input)
+    def __init__(self, value):
+        self.cities = value
 
     def __len__(self):
         return len(self._cities)
+
+    @property
+    def cities(self):
+        return self._cities
+
+    @cities.setter
+    def cities(self, value):
+        if isinstance(value, list):
+            self._cities = value
+        elif str(type(value)).find('Path') >= 0:
+            self._cities = read_csv(value)
+
+        for i in illegal_string:
+            if value.find(i) >= 0:
+                raise ValueError("Name of city should not contain special characters")
 
     def countries(self) -> List[str]:
         countries = [city.country for city in self.cities]
@@ -138,7 +152,7 @@ class CityCollection:
 
     def total_attendees(self) -> int:
         total = 0
-        for city in self._cities:
+        for city in self.cities:
             total += city.citizens_count
         return total
 
