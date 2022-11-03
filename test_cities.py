@@ -9,15 +9,15 @@ from cities import City
 class Test_City:
     class Test_creat_new_city:
         def test_city_name(self):
-            with pytest.raises(ValueError) as e:
+            with pytest.raises(TypeError) as e:
                 city = City(name=768, country='asda', citizens_count=233, longitude=12.3, latitude=39)
             assert str(e.value).find('Name of city should be a string') >= 0
 
-            with pytest.raises(ValueError) as e:
+            with pytest.raises(TypeError) as e:
                 city = City(name=True, country='asda', citizens_count=233, longitude=12.3, latitude=39)
             assert str(e.value).find('Name of city should be a string') >= 0
 
-            with pytest.raises(ValueError) as e:
+            with pytest.raises(TypeError) as e:
                 city = City(name=88., country='asda', citizens_count=233, longitude=12.3, latitude=39)
             assert str(e.value).find('Name of city should be a string') >= 0
 
@@ -36,15 +36,15 @@ class Test_City:
             pass
 
         def test_country_name(self):
-            with pytest.raises(ValueError) as e:
+            with pytest.raises(TypeError) as e:
                 city = City(name='a', country=768, citizens_count=233, longitude=12.3, latitude=39)
             assert str(e.value).find('Name of country should be a string') >= 0
 
-            with pytest.raises(ValueError) as e:
+            with pytest.raises(TypeError) as e:
                 city = City(name='a', country=True, citizens_count=233, longitude=12.3, latitude=39)
             assert str(e.value).find('Name of country should be a string') >= 0
 
-            with pytest.raises(ValueError) as e:
+            with pytest.raises(TypeError) as e:
                 city = City(name='a', country=11., citizens_count=233, longitude=12.3, latitude=39)
             assert str(e.value).find('Name of country should be a string') >= 0
 
@@ -63,11 +63,11 @@ class Test_City:
             pass
 
         def test_citizens_count(self):
-            with pytest.raises(ValueError) as e:
+            with pytest.raises(TypeError) as e:
                 city = City(name='a', country='aaa', citizens_count=233., longitude=12.3, latitude=39)
             assert str(e.value).find('Number of citizens should be an int') >= 0
 
-            with pytest.raises(ValueError) as e:
+            with pytest.raises(TypeError) as e:
                 city = City(name='a', country='aaa', citizens_count='aaj', longitude=12.3, latitude=39)
             assert str(e.value).find('Number of citizens should be an int') >= 0
 
@@ -87,7 +87,7 @@ class Test_City:
             pass
 
         def test_longitude(self):
-            with pytest.raises(ValueError) as e:
+            with pytest.raises(TypeError) as e:
                 city = City(name='a', country='aaa', citizens_count=233, longitude='-udisdf', latitude=39)
             assert str(e.value).find('Longitude should be float') >= 0
 
@@ -115,7 +115,7 @@ class Test_City:
             pass
 
         def test_latitude(self):
-            with pytest.raises(ValueError) as e:
+            with pytest.raises(TypeError) as e:
                 city = City(name='a', country='aaa', citizens_count=233, latitude='-udisdf', longitude=39)
             assert str(e.value).find('Latitude should be float') >= 0
 

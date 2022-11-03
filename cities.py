@@ -38,7 +38,7 @@ class City:
     @name.setter
     def name(self, value):
         if not isinstance(value, str):
-            raise ValueError("Name of city should be a string instead of {}".format(type(value)))
+            raise TypeError("Name of city should be a string instead of {}".format(type(value)))
         for i in illegal_string:
             if value.find(i) >= 0:
                 raise ValueError("Name of city should not contain special characters")
@@ -51,7 +51,7 @@ class City:
     @country.setter
     def country(self, value):
         if not isinstance(value, str):
-            raise ValueError("Name of country should be a string instead of {}".format(type(value)))
+            raise TypeError("Name of country should be a string instead of {}".format(type(value)))
         for i in illegal_string:
             if value.find(i) >= 0:
                 raise ValueError("Name of country should not contain special characters")
@@ -64,7 +64,7 @@ class City:
     @citizens_count.setter
     def citizens_count(self, value):
         if not isinstance(value, int):
-            raise ValueError("Number of citizens should be an int instead of {}".format(type(value)))
+            raise TypeError("Number of citizens should be an int instead of {}".format(type(value)))
         if value <= 0:
             raise ValueError("Number of citizens should not be less than 1")
         self._citizens_count = value
@@ -76,7 +76,7 @@ class City:
     @latitude.setter
     def latitude(self, value):
         if not isinstance(value, float) and not isinstance(value, int):
-            raise ValueError(
+            raise TypeError(
                 "Latitude should be float instead of {}".format(type(value)))
 
         if value > 90 or value < -90:
@@ -94,7 +94,7 @@ class City:
     @longitude.setter
     def longitude(self, value):
         if not isinstance(value, float) and not isinstance(value, int):
-            raise ValueError(
+            raise TypeError(
                 "Longitude should be float instead of {}".format(type(value)))
         if value > 180 or value < -180:
             raise ValueError("Invalid longitude value: {} {} than {}".format
