@@ -141,6 +141,51 @@ class Test_City:
             assert city.latitude == x
             pass
 
+    class Test_city_methods:
+        def test_distance_to(self):
+            for i in range(10000):
+                long = random.random() * 360. - 180.
+                lati = random.random() * 180. - 90.
+                city = City(name='a', country='aaa', citizens_count=233, longitude=long, latitude=lati)
+                city2 = City(name='a', country='aaa', citizens_count=233, longitude=long, latitude=lati)
+                assert city.distance_to(city2) == 0.
+
+            for i in range(10000):
+                long1 = random.random() * 360. - 180.
+                lati1 = random.random() * 180. - 90.
+                long2 = random.random() * 360. - 180.
+                lati2 = random.random() * 180. - 90.
+                city1 = City(name='123', country='asda', citizens_count=233, longitude=long1, latitude=lati1)
+                city2 = City(name='123', country='asda', citizens_count=233, longitude=long2, latitude=lati2)
+                assert city1.distance_to(city2) == city2.distance_to(city1)
+
+        def test_co2_to(self):
+            for i in range(10000):
+                long = random.random() * 360. - 180.
+                lati = random.random() * 180. - 90.
+                city = City(name='a', country='aaa', citizens_count=233, longitude=long, latitude=lati)
+                city2 = City(name='a', country='aaa', citizens_count=233, longitude=long, latitude=lati)
+                assert city.co2_to(city2) == 0.
+
+            for i in range(10000):
+                long1 = random.random() * 360. - 180.
+                lati1 = random.random() * 180. - 90.
+                long2 = random.random() * 360. - 180.
+                lati2 = random.random() * 180. - 90.
+                city1 = City(name='123', country='asda', citizens_count=233, longitude=long1, latitude=lati1)
+                city2 = City(name='123', country='asda', citizens_count=233, longitude=long2, latitude=lati2)
+
+                d = city2.distance_to(city1)
+                if d <= 1000:
+                    emission = 200.
+                elif d <= 8000:
+                    emission = 250.
+                else:
+                    emission = 300.
+
+                assert city1.co2_to(city2) == city1.distance_to(city2) * emission
+                assert city1.co2_to(city2) == city2.co2_to(city1)
+
     # The City methods work correctly for all modes of transportation
     def test_emission(self):
         pass

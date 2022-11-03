@@ -101,17 +101,16 @@ class City:
             raise ValueError("Invalid longitude value: {} {} than {}".format
                              (value,
                               'larger' if value > 180 else 'less',
-                              180 if value > 180 else -180)
-                             )
+                              180 if value > 180 else -180))
         self._longitude = float(value)
 
     def distance_to(self, other: 'City') -> float:
         R = 6371
         return 2 * R * math.asin(
             (
-                    math.sin((other._latitude - self._latitude) / 180 * math.pi / 2) ** 2 +
-                    math.cos(self._latitude / 180 * math.pi) * math.cos(other._latitude / 180 * math.pi) *
-                    math.sin((other._longitude - self._longitude) / 180 * math.pi / 2) ** 2
+                    math.sin((other.latitude - self.latitude) / 180 * math.pi / 2) ** 2 +
+                    math.cos(self.latitude / 180 * math.pi) * math.cos(other.latitude / 180 * math.pi) *
+                    math.sin((other.longitude - self.longitude) / 180 * math.pi / 2) ** 2
             ) ** .5)
 
     def co2_to(self, other: 'City') -> float:

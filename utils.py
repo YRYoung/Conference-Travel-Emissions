@@ -4,10 +4,12 @@ from cities import City, CityCollection
 def read_attendees_file(filepath: str) -> CityCollection:
     return ...
 
-city = City(name='a', country='aaa', citizens_count=233, longitude='-udisdf', latitude=39)
+city = City(name='a', country='aaa', citizens_count=233, longitude=22, latitude=39)
+city2 = City(name='a', country='aaa', citizens_count=233, longitude=22, latitude=39)
 
 
-print(city.longitude)
+
+print(city2.distance_to(city))
 
 # cities = CityCollection(Path('attendee_locations.csv'))
 # print(cities.total_distance_travel_to(cities.cities[2]))
