@@ -4,7 +4,7 @@ from typing import Dict, List
 
 import matplotlib.pyplot as plt
 
-illegal_string = "~!@#$%^&*()_+-*/<>,.[]\/"
+illegal_string = "~!@#$%^&*_+*<>[]"
 
 
 def read_csv(filepath: str):
@@ -130,6 +130,9 @@ class CityCollection:
     def __len__(self):
         return len(self._cities)
 
+    def __getitem__(self, index):
+        return self.cities[index]
+
     @property
     def cities(self):
         return self._cities
@@ -140,10 +143,6 @@ class CityCollection:
             self._cities = value
         elif str(type(value)).find('Path') >= 0:
             self._cities = read_csv(value)
-
-        for i in illegal_string:
-            if value.find(i) >= 0:
-                raise ValueError("Name of city should not contain special characters")
 
     def countries(self) -> List[str]:
         countries = [city.country for city in self.cities]
@@ -172,7 +171,7 @@ class CityCollection:
         return dict
 
     def total_co2(self, city: City) -> float:
-        total = 0
+        total = 0.
         for c in self.cities:
             total += c.co2_to(city) * c.citizens_count
         return total
@@ -189,8 +188,9 @@ class CityCollection:
     def summary(self, city: City):
         print('Host city: {} ({})'.format(city.name, city.country))
         print('Total CO2: {} tones'.format(round(self.total_co2(city) / 1000.)))
-        print('Total attendees travelling to Zurich from {} different cities: {}'.format(
-            self.__len__(), self.total_attendees()))
+        print('Total attendees travelling to {} from {} different cities: {}'.format(city.name,
+                                                                                     self.__len__(),
+                                                                                     self.total_attendees()))
         return
 
     def sorted_by_emissions(self) -> List[City]:
@@ -208,7 +208,7 @@ class CityCollection:
 
         countries_emissions_list.sort(key=lambda tuple: tuple[1], reverse=True)
 
-        emissions_everywhere_else = 0
+        emissions_everywhere_else = 0.
         for tuple in countries_emissions_list[n:]:
             emissions_everywhere_else += tuple[1]
 

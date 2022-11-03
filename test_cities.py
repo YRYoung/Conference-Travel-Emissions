@@ -1,9 +1,15 @@
 import random
 import string
+from pathlib import Path
 
 import pytest
+from cities import City, CityCollection
 
-from cities import City
+
+def generate_random_city():
+    long = random.random() * 360. - 180.
+    lati = random.random() * 180. - 90.
+    return City(name='a', country='aaa', citizens_count=233, longitude=long, latitude=lati)
 
 
 class Test_City:
@@ -144,36 +150,26 @@ class Test_City:
     class Test_city_methods:
         def test_distance_to(self):
             for i in range(10000):
-                long = random.random() * 360. - 180.
-                lati = random.random() * 180. - 90.
-                city = City(name='a', country='aaa', citizens_count=233, longitude=long, latitude=lati)
-                city2 = City(name='a', country='aaa', citizens_count=233, longitude=long, latitude=lati)
+                city = generate_random_city()
+                city2 = City(name='a', country='aaa', citizens_count=233, longitude=city.longitude,
+                             latitude=city.latitude)
                 assert city.distance_to(city2) == 0.
 
             for i in range(10000):
-                long1 = random.random() * 360. - 180.
-                lati1 = random.random() * 180. - 90.
-                long2 = random.random() * 360. - 180.
-                lati2 = random.random() * 180. - 90.
-                city1 = City(name='123', country='asda', citizens_count=233, longitude=long1, latitude=lati1)
-                city2 = City(name='123', country='asda', citizens_count=233, longitude=long2, latitude=lati2)
+                city1 = generate_random_city()
+                city2 = generate_random_city()
                 assert city1.distance_to(city2) == city2.distance_to(city1)
 
         def test_co2_to(self):
             for i in range(10000):
-                long = random.random() * 360. - 180.
-                lati = random.random() * 180. - 90.
-                city = City(name='a', country='aaa', citizens_count=233, longitude=long, latitude=lati)
-                city2 = City(name='a', country='aaa', citizens_count=233, longitude=long, latitude=lati)
+                city = generate_random_city()
+                city2 = City(name='a', country='aaa', citizens_count=233, longitude=city.longitude,
+                             latitude=city.latitude)
                 assert city.co2_to(city2) == 0.
 
             for i in range(10000):
-                long1 = random.random() * 360. - 180.
-                lati1 = random.random() * 180. - 90.
-                long2 = random.random() * 360. - 180.
-                lati2 = random.random() * 180. - 90.
-                city1 = City(name='123', country='asda', citizens_count=233, longitude=long1, latitude=lati1)
-                city2 = City(name='123', country='asda', citizens_count=233, longitude=long2, latitude=lati2)
+                city1 = generate_random_city()
+                city2 = generate_random_city()
 
                 d = city2.distance_to(city1)
                 if d <= 1000:
@@ -186,9 +182,104 @@ class Test_City:
                 assert city1.co2_to(city2) == city1.distance_to(city2) * emission
                 assert city1.co2_to(city2) == city2.co2_to(city1)
 
-class Test_CityCollection:
-    pass
 
-# The CityCollection methods providing simple information about the collection work correctly
-# The CityCollection methods providing information about a host-city-specific metric work correctly.
-# The sorted_by_emissions method works correctly.
+city_collection_all = CityCollection(Path('attendee_locations.csv'))
+city_collection = CityCollection(random.sample(city_collection_all.cities, 400))
+
+
+class Test_CityCollection:
+    class Test_simple_info:
+        def test_countries(self):
+            for i in range(0, len(city_collection)):
+                sub_city_collection = CityCollection(city_collection.cities[:i])
+
+                countries = sub_city_collection.countries()
+                for city in sub_city_collection.cities:
+                    assert countries.count(city.country) == 1
+
+        def test_total_attendees(self):
+            for i in range(0, len(city_collection)):
+                sub_city_collection = CityCollection(city_collection.cities[:i])
+                total = sub_city_collection.total_attendees()
+                for city in sub_city_collection.cities:
+                    total -= city.citizens_count
+                assert total == 0
+
+    class Test_host2cities_methods:
+        def test_total_distance_travel_to(self):
+
+            for i in range(10):
+                long = random.random() * 360. - 180.
+                lati = random.random() * 180. - 90.
+
+                random_city = City(name='123', country='asda', citizens_count=233, longitude=long, latitude=lati)
+
+                for i in range(0, len(city_collection) - 1):
+                    sub_city_collection_1 = CityCollection(city_collection[:i])
+                    sub_city_collection_2 = CityCollection(city_collection[i:])
+                    assert -0.00001 < sub_city_collection_1.total_distance_travel_to(
+                        random_city) + sub_city_collection_2.total_distance_travel_to(
+                        random_city) - city_collection.total_distance_travel_to(random_city) < 0.00001
+
+        def test_travel_by_country(self):
+
+            for i in range(1, len(city_collection)):
+                sub_city_collection = CityCollection(city_collection.cities[:i])
+                long = random.random() * 360. - 180.
+                lati = random.random() * 180. - 90.
+                random_city = City(name='123', country='asda', citizens_count=233, longitude=long, latitude=lati)
+
+                countries_dict = sub_city_collection.travel_by_country(random_city)
+                # test if the keys include all countries
+                assert set(countries_dict.keys()) == set(sub_city_collection.countries())
+
+                # test if the sum of distances of countries == total distance
+                total_dist = 0.
+                for value in countries_dict.values():
+                    total_dist += value
+                assert abs(total_dist - sub_city_collection.total_distance_travel_to(random_city)) < 0.00001
+
+        def test_total_co2(self):
+
+            for i in range(10):
+                long = random.random() * 360. - 180.
+                lati = random.random() * 180. - 90.
+
+                random_city = City(name='123', country='asda', citizens_count=233, longitude=long, latitude=lati)
+
+                for i in range(0, len(city_collection) - 1):
+                    sub_city_collection_1 = CityCollection(city_collection[:i])
+                    sub_city_collection_2 = CityCollection(city_collection[i:])
+                    assert abs(sub_city_collection_1.total_co2(
+                        random_city) + sub_city_collection_2.total_co2(
+                        random_city) - city_collection.total_co2(random_city)) < 0.001
+
+            pass
+
+        def test_co2_by_country(self):
+
+            for i in range(1, len(city_collection)):
+                sub_city_collection = CityCollection(city_collection.cities[:i])
+                long = random.random() * 360. - 180.
+                lati = random.random() * 180. - 90.
+                random_city = City(name='123', country='asda', citizens_count=233, longitude=long, latitude=lati)
+
+                countries_dict = sub_city_collection.co2_by_country(random_city)
+                # test if the keys include all countries
+                assert set(countries_dict.keys()) == set(sub_city_collection.countries())
+
+                # test if the sum of emission of countries == total emission
+                total_emission = 0.
+                for value in countries_dict.values():
+                    total_emission += value
+                assert abs(total_emission - sub_city_collection.total_co2(random_city)) < 0.001
+
+    def test_sort(self):
+        for i in range(1, len(city_collection)):
+            sub_city_collection = CityCollection(city_collection.cities[:i])
+
+            hosts = sub_city_collection.sorted_by_emissions()
+            emission = sub_city_collection.total_co2(hosts[0])
+            for host in hosts:
+                assert emission >= sub_city_collection.total_co2(host)
+                emission = sub_city_collection.total_co2(host)
