@@ -1,10 +1,30 @@
 import csv
 import math
 from typing import Dict, List
+
 import matplotlib.pyplot as plt
 
 
+def read_csv(filepath: str):
+    data = []
+    with open(filepath, 'r', newline='', encoding="utf8") as csvfile:
+        reader = csv.DictReader(csvfile)
+        for row in reader:  # 将csv 文件中的数据保存到data中
+            data.append(row)  # 选择某一列加入到data数组中
+
+    return [City(name=data[i]['city'],
+                 country=data[i]['country'],
+                 citizens_count=int(data[i]['N']),
+                 longitude=float(data[i]['lon']),
+                 latitude=float(data[i]['lat']))
+            for i in range(len(data))]
+
+
+illegal_string = "~!@#$%^&*()_+-*/<>,.[]\/"
+
+
 class City:
+
     def __init__(self, name: str, country: str, citizens_count: int, longitude: float, latitude: float):
         self.latitude = latitude
         self.longitude = longitude
@@ -12,72 +32,78 @@ class City:
         self.name = name
         self.country = country
 
-
     @property
     def name(self):
         return self._name
+
     @name.setter
-    def name(self,value):
-        if not isinstance(value,str):
-            raise Exception("Name of city should be a string instead of {}".format(type(value)))
-        self._name=value
+    def name(self, value):
+        if not isinstance(value, str):
+            raise ValueError("Name of city should be a string instead of {}".format(type(value)))
+        for i in illegal_string:
+            if value.find(i) >= 0:
+                raise ValueError("Name of city should not contain special characters")
+        self._name = value
 
-
-    
     @property
     def country(self):
         return self._country
+
     @country.setter
-    def country(self,value):
-        if not isinstance(value,str):
-            raise Exception("Name of country should be a string instead of {}".format(type(value)))
-        self._country=value
+    def country(self, value):
+        if not isinstance(value, str):
+            raise ValueError("Name of country should be a string instead of {}".format(type(value)))
+        for i in illegal_string:
+            if value.find(i) >= 0:
+                raise ValueError("Name of country should not contain special characters")
+        self._country = value
 
     @property
     def citizens_count(self):
         return self._citizens_count
+
     @citizens_count.setter
-    def citizens_count(self,value):
-        if not isinstance(value,int):
+    def citizens_count(self, value):
+        if not isinstance(value, int):
             raise ValueError("Number of citizens should be an int instead of {}".format(type(value)))
-        if value < 0:
-           raise ValueError("Number of citizens should not be less than 0.")
-        self._citizens_count=value
-
-
+        if value <= 0:
+            raise ValueError("Number of citizens should not be less than 1")
+        self._citizens_count = value
 
     @property
     def latitude(self):
         return self._latitude
+
     @latitude.setter
-    def latitude(self,value):
-        if not (isinstance(value,float) or isinstance(value,int)) :
+    def latitude(self, value):
+        if not isinstance(value, float) and not isinstance(value, int):
             raise ValueError(
                 "Latitude should be float instead of {}".format(type(value)))
-                
+
         if value > 90 or value < -90:
-            raise ValueError("Invalied latitude value: {} {} than {}" .format
-            (value, 
-            'larger' if value > 90 else 'less',
-            90 if value > 90 else -90)
-            )
-        self._latitude=value
+            raise ValueError("Invalid latitude value: {} {} than {}".format
+                             (value,
+                              'larger' if value > 90 else 'less',
+                              90 if value > 90 else -90)
+                             )
+        self._latitude = float(value)
 
     @property
     def longitude(self):
         return self._longitude
+
     @longitude.setter
-    def longitude(self,value):
-        if not (isinstance(value,float) or isinstance(value,int)) :
+    def longitude(self, value):
+        if not isinstance(value, float) and not isinstance(value, int):
             raise ValueError(
-                "Longtitude should be float instead of {}".format(type(value)))
+                "Longitude should be float instead of {}".format(type(value)))
         if value > 180 or value < -180:
-            raise ValueError("Invalied longtitude value: {} {} than {}" .format
-            (value, 
-            'larger' if value > 180 else 'less',
-            180 if value > 180 else -180)
-            )
-        self._longtitude=value
+            raise ValueError("Invalid longitude value: {} {} than {}".format
+                             (value,
+                              'larger' if value > 180 else 'less',
+                              180 if value > 180 else -180)
+                             )
+        self._longitude = float(value)
 
     def distance_to(self, other: 'City') -> float:
         R = 6371
@@ -97,21 +123,6 @@ class City:
         else:
             emission = 300.
         return emission * d
-
-
-def read_csv(filepath: str):
-    data = []
-    with open(filepath, 'r', newline='', encoding="utf8") as csvfile:
-        reader = csv.DictReader(csvfile)
-        for row in reader:  # 将csv 文件中的数据保存到data中
-            data.append(row)  # 选择某一列加入到data数组中
-
-    return [City(name=data[i]['city'],
-                 country=data[i]['country'],
-                 citizens_count=int(data[i]['N']),
-                 longitude=float(data[i]['lon']),
-                 latitude=float(data[i]['lat']))
-            for i in range(len(data))]
 
 
 class CityCollection:
@@ -178,31 +189,27 @@ class CityCollection:
         return sort_list
 
     def plot_top_emitters(self, city: City, n: int = 10, save: bool = False):
-        dict = self.co2_by_country(city)
-        list = [(country_name, dict[country_name]) for country_name in dict.keys()]
+        countries_dict = self.co2_by_country(city)
+        countries_emissions_list = [(country_name, countries_dict[country_name]) for country_name in
+                                    countries_dict.keys()]
 
-        list.sort(key=lambda tuple: tuple[1], reverse=True)
+        countries_emissions_list.sort(key=lambda tuple: tuple[1], reverse=True)
 
         emissions_everywhere_else = 0
-        for tuple in list[n:]:
+        for tuple in countries_emissions_list[n:]:
             emissions_everywhere_else += tuple[1]
-        new_list = list[:n] + [('All other countries', emissions_everywhere_else)]
 
-        names = [tuple[0] for tuple in new_list]
-        emissions = [tuple[1] / 1000 for tuple in new_list]
+        new_list = countries_emissions_list[:n] + [('All other countries', emissions_everywhere_else)]
+
+        names = [item[0] for item in new_list]
+        emissions = [item[1] / 1000 for item in new_list]
 
         plt.figure(figsize=(n * 1.5, n))
         plt.title('Total Emissions from Each Country (top {})'.format(n))
         plt.ylabel('Total emissions(tonnes CO2)')
-
-
-        plt.bar(names, emissions, color=['royalblue','hotpink'])
+        plt.bar(names, emissions, color=['royalblue', 'hotpink'])
 
         if save:
             plt.savefig(city.name.replace(' ', '_') + '.png')
 
         plt.show()
-
-
-
-
