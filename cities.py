@@ -11,12 +11,12 @@ def read_csv(filepath: str):
     data = []
     with open(filepath, 'r', newline='', encoding="utf8") as csvfile:
         reader = csv.DictReader(csvfile)
-        for row in reader:  # 将csv 文件中的数据保存到data中
+        for row in reader:  # 将csv文件中的数据保存到data中
             data.append(row)  # 选择某一列加入到data数组中
 
     return [City(name=data[i]['city'],
                  country=data[i]['country'],
-                 citizens_count=int(data[i]['N']),
+                 num_attendees=int(data[i]['N']),
                  longitude=float(data[i]['lon']),
                  latitude=float(data[i]['lat']))
             for i in range(len(data))]
@@ -24,10 +24,10 @@ def read_csv(filepath: str):
 
 class City:
 
-    def __init__(self, name: str, country: str, citizens_count: int, longitude: float, latitude: float):
+    def __init__(self, name: str, country: str, num_attendees: int, latitude: float, longitude: float):
         self.latitude = latitude
         self.longitude = longitude
-        self.citizens_count = citizens_count
+        self.num_attendees = num_attendees
         self.name = name
         self.country = country
 
@@ -58,15 +58,15 @@ class City:
         self._country = value
 
     @property
-    def citizens_count(self):
+    def num_attendees(self):
         return self._citizens_count
 
-    @citizens_count.setter
-    def citizens_count(self, value):
+    @num_attendees.setter
+    def num_attendees(self, value):
         if not isinstance(value, int):
             raise TypeError("Number of citizens should be an int instead of {}".format(type(value)))
-        if value <= 0:
-            raise ValueError("Number of citizens should not be less than 1")
+        if value < 0:
+            raise ValueError("Number of citizens should not be less than 0")
         self._citizens_count = value
 
     @property
@@ -113,6 +113,9 @@ class City:
             ) ** .5)
 
     def co2_to(self, other: 'City') -> float:
+        return self.co2_to_per_person(other) * self.num_attendees
+
+    def co2_to_per_person(self, other: 'City') -> float:
         d = self.distance_to(other)
         if d <= 1000:
             emission = 200.
@@ -143,6 +146,8 @@ class CityCollection:
             self._cities = value
         elif str(type(value)).find('Path') >= 0:
             self._cities = read_csv(value)
+        else:
+            raise ValueError('Invalid cities input: it should be a list or a system path')
 
     def countries(self) -> List[str]:
         countries = [city.country for city in self.cities]
@@ -152,13 +157,13 @@ class CityCollection:
     def total_attendees(self) -> int:
         total = 0
         for city in self.cities:
-            total += city.citizens_count
+            total += city.num_attendees
         return total
 
     def total_distance_travel_to(self, city: City) -> float:
         total_d = 0.
         for c in self.cities:
-            total_d += c.distance_to(city) * c.citizens_count
+            total_d += c.distance_to(city) * c.num_attendees
         return total_d
 
     def travel_by_country(self, city: City) -> Dict[str, float]:
@@ -173,7 +178,7 @@ class CityCollection:
     def total_co2(self, city: City) -> float:
         total = 0.
         for c in self.cities:
-            total += c.co2_to(city) * c.citizens_count
+            total += c.co2_to_per_person(city) * c.num_attendees
         return total
 
     def co2_by_country(self, city: City) -> Dict[str, float]:

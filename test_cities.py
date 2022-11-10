@@ -1,33 +1,36 @@
 import random
 import string
-import pytest
 from pathlib import Path
+
+import pytest
+
 from cities import City, CityCollection
 
 
 def generate_random_city():
     long = random.random() * 360. - 180.
     lati = random.random() * 180. - 90.
-    return City(name='a', country='aaa', citizens_count=233, longitude=long, latitude=lati)
+    attendees = random.randint(0, 500)
+    return City(name='a', country='aaa', num_attendees=attendees, longitude=long, latitude=lati)
 
 
 class Test_City:
     class Test_creat_new_city:
         def test_city_name(self):
             with pytest.raises(TypeError) as e:
-                city = City(name=768, country='asda', citizens_count=233, longitude=12.3, latitude=39)
+                city = City(name=768, country='asda', num_attendees=233, longitude=12.3, latitude=39)
             assert str(e.value).find('Name of city should be a string') >= 0
 
             with pytest.raises(TypeError) as e:
-                city = City(name=True, country='asda', citizens_count=233, longitude=12.3, latitude=39)
+                city = City(name=True, country='asda', num_attendees=233, longitude=12.3, latitude=39)
             assert str(e.value).find('Name of city should be a string') >= 0
 
             with pytest.raises(TypeError) as e:
-                city = City(name=88., country='asda', citizens_count=233, longitude=12.3, latitude=39)
+                city = City(name=88., country='asda', num_attendees=233, longitude=12.3, latitude=39)
             assert str(e.value).find('Name of city should be a string') >= 0
 
             with pytest.raises(ValueError) as e:
-                city = City(name='bcd^S**&', country='asda', citizens_count=233, longitude=12.3, latitude=39)
+                city = City(name='bcd^S**&', country='asda', num_attendees=233, longitude=12.3, latitude=39)
             assert str(e.value).find('Name of city should not contain special characters') >= 0
 
             number_of_strings = 5
@@ -35,26 +38,26 @@ class Test_City:
 
             for x in range(number_of_strings):
                 name = ''.join(random.choice(string.ascii_letters + string.digits) for _ in range(length_of_string))
-                city = City(name=name, country='asda', citizens_count=233, longitude=12.3, latitude=39)
+                city = City(name=name, country='asda', num_attendees=233, longitude=12.3, latitude=39)
             assert city.name == name
 
             pass
 
         def test_country_name(self):
             with pytest.raises(TypeError) as e:
-                city = City(name='a', country=768, citizens_count=233, longitude=12.3, latitude=39)
+                city = City(name='a', country=768, num_attendees=233, longitude=12.3, latitude=39)
             assert str(e.value).find('Name of country should be a string') >= 0
 
             with pytest.raises(TypeError) as e:
-                city = City(name='a', country=True, citizens_count=233, longitude=12.3, latitude=39)
+                city = City(name='a', country=True, num_attendees=233, longitude=12.3, latitude=39)
             assert str(e.value).find('Name of country should be a string') >= 0
 
             with pytest.raises(TypeError) as e:
-                city = City(name='a', country=11., citizens_count=233, longitude=12.3, latitude=39)
+                city = City(name='a', country=11., num_attendees=233, longitude=12.3, latitude=39)
             assert str(e.value).find('Name of country should be a string') >= 0
 
             with pytest.raises(ValueError) as e:
-                city = City(name='a', country='bcd^S**&', citizens_count=233, longitude=12.3, latitude=39)
+                city = City(name='a', country='bcd^S**&', num_attendees=233, longitude=12.3, latitude=39)
             assert str(e.value).find('Name of country should not contain special characters') >= 0
 
             number_of_strings = 5
@@ -62,87 +65,87 @@ class Test_City:
 
             for x in range(number_of_strings):
                 name = ''.join(random.choice(string.ascii_letters + string.digits) for _ in range(length_of_string))
-                city = City(name='a', country=name, citizens_count=233, longitude=12.3, latitude=39)
+                city = City(name='a', country=name, num_attendees=233, longitude=12.3, latitude=39)
             assert city.country == name
 
             pass
 
         def test_citizens_count(self):
             with pytest.raises(TypeError) as e:
-                city = City(name='a', country='aaa', citizens_count=233., longitude=12.3, latitude=39)
+                city = City(name='a', country='aaa', num_attendees=233., longitude=12.3, latitude=39)
             assert str(e.value).find('Number of citizens should be an int') >= 0
 
             with pytest.raises(TypeError) as e:
-                city = City(name='a', country='aaa', citizens_count='aaj', longitude=12.3, latitude=39)
+                city = City(name='a', country='aaa', num_attendees='aaj', longitude=12.3, latitude=39)
             assert str(e.value).find('Number of citizens should be an int') >= 0
 
             with pytest.raises(ValueError) as e:
-                city = City(name='a', country='aaa', citizens_count=-2, longitude=12.3, latitude=39)
+                city = City(name='a', country='aaa', num_attendees=-2, longitude=12.3, latitude=39)
             assert str(e.value).find('Number of citizens should not be less than 1') >= 0
 
             with pytest.raises(ValueError) as e:
-                city = City(name='a', country='aaa', citizens_count=0, longitude=12.3, latitude=39)
+                city = City(name='a', country='aaa', num_attendees=0, longitude=12.3, latitude=39)
             assert str(e.value).find('Number of citizens should not be less than 1') >= 0
 
             for i in range(100):
                 x = random.randint(1, 10000)
-                city = City(name='a', country='aaa', citizens_count=x, longitude=12.3, latitude=39)
-            assert city.citizens_count == x
+                city = City(name='a', country='aaa', num_attendees=x, longitude=12.3, latitude=39)
+            assert city.num_attendees == x
 
             pass
 
         def test_longitude(self):
             with pytest.raises(TypeError) as e:
-                city = City(name='a', country='aaa', citizens_count=233, longitude='-udisdf', latitude=39)
+                city = City(name='a', country='aaa', num_attendees=233, longitude='-udisdf', latitude=39)
             assert str(e.value).find('Longitude should be float') >= 0
 
             with pytest.raises(ValueError) as e:
-                city = City(name='a', country='aaa', citizens_count=233, longitude=181., latitude=39)
+                city = City(name='a', country='aaa', num_attendees=233, longitude=181., latitude=39)
             assert str(e.value).find('181.0 larger than 180') >= 0
 
             with pytest.raises(ValueError) as e:
-                city = City(name='a', country='aaa', citizens_count=233, longitude=-181., latitude=39)
+                city = City(name='a', country='aaa', num_attendees=233, longitude=-181., latitude=39)
             assert str(e.value).find('-181.0 less than -180') >= 0
             #
-            city = City(name='a', country='aaa', citizens_count=233, longitude=-1, latitude=39)
+            city = City(name='a', country='aaa', num_attendees=233, longitude=-1, latitude=39)
             assert isinstance(city.longitude, float)
             #
             for i in range(100):
                 x = random.random() * 180.
-                city = City(name='a', country='aaa', citizens_count=20, longitude=x, latitude=39)
+                city = City(name='a', country='aaa', num_attendees=20, longitude=x, latitude=39)
             assert city.longitude == x
 
             for i in range(100):
                 x = - random.random() * 180.
-                city = City(name='a', country='aaa', citizens_count=20, longitude=x, latitude=39)
+                city = City(name='a', country='aaa', num_attendees=20, longitude=x, latitude=39)
             assert city.longitude == x
 
             pass
 
         def test_latitude(self):
             with pytest.raises(TypeError) as e:
-                city = City(name='a', country='aaa', citizens_count=233, latitude='-udisdf', longitude=39)
+                city = City(name='a', country='aaa', num_attendees=233, latitude='-udisdf', longitude=39)
             assert str(e.value).find('Latitude should be float') >= 0
 
             with pytest.raises(ValueError) as e:
-                city = City(name='a', country='aaa', citizens_count=233, latitude=91., longitude=39)
+                city = City(name='a', country='aaa', num_attendees=233, latitude=91., longitude=39)
             assert str(e.value).find('91.0 larger than 90') >= 0
 
             with pytest.raises(ValueError) as e:
-                city = City(name='a', country='aaa', citizens_count=233, latitude=-91., longitude=39)
+                city = City(name='a', country='aaa', num_attendees=233, latitude=-91., longitude=39)
             assert str(e.value).find('-91.0 less than -90') >= 0
             #
-            city = City(name='a', country='aaa', citizens_count=233, latitude=-1, longitude=39)
+            city = City(name='a', country='aaa', num_attendees=233, latitude=-1, longitude=39)
             assert isinstance(city.latitude, float)
             #
             for i in range(100):
                 x = random.random() * 90.
-                city = City(name='a', country='aaa', citizens_count=20, latitude=x, longitude=39)
+                city = City(name='a', country='aaa', num_attendees=20, latitude=x, longitude=39)
             assert city.latitude == x
 
             for i in range(100):
                 x = - random.random() * 90.
-                city = City(name='a', country='aaa', citizens_count=20, latitude=x, longitude=39)
+                city = City(name='a', country='aaa', num_attendees=20, latitude=x, longitude=39)
             assert city.latitude == x
             pass
 
@@ -150,7 +153,7 @@ class Test_City:
         def test_distance_to(self):
             for i in range(10000):
                 city = generate_random_city()
-                city2 = City(name='a', country='aaa', citizens_count=233, longitude=city.longitude,
+                city2 = City(name='a', country='aaa', num_attendees=233, longitude=city.longitude,
                              latitude=city.latitude)
                 assert city.distance_to(city2) == 0.
 
@@ -160,11 +163,11 @@ class Test_City:
                 assert city1.distance_to(city2) == city2.distance_to(city1)
 
         def test_co2_to(self):
-            for i in range(10000):
+            for i in range(10):
                 city = generate_random_city()
-                city2 = City(name='a', country='aaa', citizens_count=233, longitude=city.longitude,
+                city2 = City(name='a', country='aaa', num_attendees=233, longitude=city.longitude,
                              latitude=city.latitude)
-                assert city.co2_to(city2) == 0.
+                assert city.co2_to_per_person(city2) == 0.
 
             for i in range(10000):
                 city1 = generate_random_city()
@@ -178,8 +181,11 @@ class Test_City:
                 else:
                     emission = 300.
 
-                assert city1.co2_to(city2) == city1.distance_to(city2) * emission
-                assert city1.co2_to(city2) == city2.co2_to(city1)
+                assert city1.co2_to_per_person(city2) == city1.distance_to(city2) * emission
+                assert city1.co2_to_per_person(city2) == city2.co2_to_per_person(city1)
+
+                assert abs(city1.co2_to(city2) - city1.distance_to(city2) * city1.num_attendees * emission) < 0.0001
+                assert abs(city2.co2_to(city1) - city2.distance_to(city1) * city2.num_attendees * emission) < 0.0001
 
 
 city_collection_all = CityCollection(Path('attendee_locations.csv'))
@@ -201,7 +207,7 @@ class Test_CityCollection:
                 sub_city_collection = CityCollection(city_collection.cities[:i])
                 total = sub_city_collection.total_attendees()
                 for city in sub_city_collection.cities:
-                    total -= city.citizens_count
+                    total -= city.num_attendees
                 assert total == 0
 
     class Test_host2cities_methods:
