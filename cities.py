@@ -233,6 +233,6 @@ class CityCollection:
         plt.bar(names, emissions, color=['royalblue', 'hotpink'])
 
         if save:
-            plt.savefig('./' + city.name.replace(' ', '_') + '.png')
+            plt.savefig('./' + city.name.replace(' ', '_').lower() + '.png')
         else:
             plt.show()

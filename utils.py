@@ -12,7 +12,8 @@ def read_attendees_file(filepath: Path) -> CityCollection:
 long = random.random() * 360. - 180.
 lati = random.random() * 180. - 90.
 attendees = random.randint(0, 500)
-h= City(name='a 6868 56 v bjk dfgd', country='aaa', num_attendees=attendees, longitude=long, latitude=lati)
+h= City(name='a 6868 56 v bjk WEUIRYIWE', country='aaa', num_attendees=attendees, longitude=long, latitude=lati)
+
 
 
 city_collection_all = CityCollection(Path('attendee_locations.csv'))
