@@ -190,8 +190,8 @@ class CityCollection:
         return dict
 
     def summary(self, city: City):
-        str = 'Host city: {} ({})\n'.format(city.name, city.country)  + \
-              'Total CO2: {} tonnes\n'.format(round(self.total_co2(city) / 1000.))+ \
+        str = 'Host city: {} ({})\n'.format(city.name, city.country) + \
+              'Total CO2: {} tonnes\n'.format(round(self.total_co2(city) / 1000.)) + \
               'Total attendees travelling to {} from {} different cities: {}'.format(
                   city.name,
                   self.__len__(),
@@ -234,5 +234,5 @@ class CityCollection:
 
         if save:
             plt.savefig('./' + city.name.replace(' ', '_') + '.png')
-
-        plt.show()
+        else:
+            plt.show()
