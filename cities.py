@@ -204,7 +204,7 @@ class CityCollection:
 
     def sorted_by_emissions(self) -> List[City]:
 
-        sort_list = [[c.name, self.total_co2(c)] for c in self.cities]
+        sort_list = [tuple([c.name, self.total_co2(c)]) for c in self.cities]
         sort_list.sort(key=lambda h_city: h_city[1], reverse=True)
         return sort_list
 
@@ -230,6 +230,6 @@ class CityCollection:
         plt.bar(names, emissions, color=['royalblue', 'hotpink'])
 
         if save:
-            plt.savefig(city.name.replace(' ', '_') + '.png')
+            plt.savefig('./' + city.name.replace(' ', '_') + '.png')
 
         plt.show()
