@@ -270,11 +270,9 @@ class Test_CityCollection:
                 assert abs(total_emission - sub_city_collection.total_co2(random_city)) < 0.001
 
     def test_sort(self):
-        for i in range(1, len(city_collection)):
+        for i in range(6, len(city_collection)):
             sub_city_collection = CityCollection(city_collection.cities[:i])
 
             hosts = sub_city_collection.sorted_by_emissions()
-            emission = sub_city_collection.total_co2(hosts[0])
-            for host in hosts:
-                assert emission >= sub_city_collection.total_co2(host)
-                emission = sub_city_collection.total_co2(host)
+            for i in range(len(hosts) - 1):
+                assert hosts[i][1] >= hosts[i + 1][1]

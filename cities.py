@@ -177,7 +177,7 @@ class CityCollection:
     def total_co2(self, city: City) -> float:
         total = 0.
         for c in self.cities:
-            total += c.co2_to_per_person(city) * c.num_attendees
+            total += c.co2_to(city)
         return total
 
     def co2_by_country(self, city: City) -> Dict[str, float]:
@@ -197,12 +197,15 @@ class CityCollection:
                                                                                      self.total_attendees()))
         return
 
+    # def sorted_by_emissions0(self) -> List[City]:
+    #     sort_list = self.cities.copy()
+    #     sort_list.sort(key=lambda h_city: self.total_co2(h_city), reverse=True)
+    #     return sort_list
+
     def sorted_by_emissions(self) -> List[City]:
-        sort_list = self.cities.copy()
-        sort_list.sort(key=lambda h_city: self.total_co2(h_city), reverse=True)
-        # for i in range(len(sort_list) - 1):
-        #     print(i)
-        #     assert self.total_co2(sort_list[i]) >= self.total_co2(sort_list[i + 1])
+
+        sort_list = [[c.name, self.total_co2(c)] for c in self.cities]
+        sort_list.sort(key=lambda h_city: h_city[1], reverse=True)
         return sort_list
 
     def plot_top_emitters(self, city: City, n: int = 10, save: bool = False):
