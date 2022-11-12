@@ -168,8 +168,7 @@ class CityCollection:
 
     def travel_by_country(self, city: City) -> Dict[str, float]:
         dict = {}
-        countries = self.countries()
-        for country in countries:
+        for country in self.countries():
             cities_of_a_country = CityCollection([c for c in self.cities if c.country == country])
             # for c in cities_of_a_country.cities: assert c.country == country
             dict[country] = cities_of_a_country.total_distance_travel_to(city)
