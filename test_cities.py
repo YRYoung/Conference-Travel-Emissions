@@ -1,4 +1,5 @@
 import random
+import re
 import string
 from pathlib import Path
 
@@ -270,9 +271,22 @@ class Test_CityCollection:
                 assert abs(total_emission - sub_city_collection.total_co2(random_city)) < 0.001
 
     def test_sort(self):
-        for i in range(6, len(city_collection)):
+        for i in range(1, len(city_collection)):
             sub_city_collection = CityCollection(city_collection.cities[:i])
 
             hosts = sub_city_collection.sorted_by_emissions()
             for i in range(len(hosts) - 1):
                 assert hosts[i][1] >= hosts[i + 1][1]
+
+    def test_summary(self):
+        for i in range(1, len(city_collection)):
+            sub_city_collection = CityCollection(city_collection.cities[:i])
+            sample_city = generate_random_city()
+
+            str = sub_city_collection.summary(sample_city)
+
+            exp_regex = re.compile(
+                r"Host city: a \(aaa\)\nTotal CO2: [0-9,]* tonnes\nTotal attendees travelling to a from [0-9,]* different cities: [0-9,]*")
+            #
+            result = exp_regex.match(str)
+            assert result

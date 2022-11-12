@@ -190,12 +190,15 @@ class CityCollection:
         return dict
 
     def summary(self, city: City):
-        print('Host city: {} ({})'.format(city.name, city.country))
-        print('Total CO2: {} tones'.format(round(self.total_co2(city) / 1000.)))
-        print('Total attendees travelling to {} from {} different cities: {}'.format(city.name,
-                                                                                     self.__len__(),
-                                                                                     self.total_attendees()))
-        return
+        str = 'Host city: {} ({})\n'.format(city.name, city.country)  + \
+              'Total CO2: {} tonnes\n'.format(round(self.total_co2(city) / 1000.))+ \
+              'Total attendees travelling to {} from {} different cities: {}'.format(
+                  city.name,
+                  self.__len__(),
+                  self.total_attendees())
+
+        print(str)
+        return str
 
     # def sorted_by_emissions0(self) -> List[City]:
     #     sort_list = self.cities.copy()
