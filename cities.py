@@ -227,9 +227,10 @@ class CityCollection:
         names = [item[0] for item in new_list]
         emissions = [item[1] / 1000 for item in new_list]
 
-        plt.figure(figsize=(n * 1.5, n))
+        plt.figure(figsize=(n * 2., n))
         plt.title('Total Emissions from Each Country (top {})'.format(n))
         plt.ylabel('Total emissions(tonnes CO2)')
+        plt.tick_params(axis='x', labelsize=8)
         plt.bar(names, emissions, color=['royalblue', 'hotpink'])
 
         if save:
